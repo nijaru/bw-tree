@@ -164,17 +164,40 @@ Setting up project structure and core primitives.
 
 ### 1. Install Mojo Runtime (CRITICAL BLOCKER)
 - **Issue:** Cannot compile or test any code without Mojo
-- **Action:** User needs to install Mojo v0.25.6+ (mise, modular CLI, or container)
+- **Action:** Install Mojo v0.25.6+ using pixi (see SETUP.md)
+  ```bash
+  # Install pixi
+  curl -fsSL https://pixi.sh/install.sh | bash
+
+  # Configure channels
+  echo 'default-channels = ["https://conda.modular.com/max-nightly", "conda-forge"]' \
+    >> $HOME/.pixi/config.toml
+
+  # Install project dependencies
+  pixi install
+
+  # Verify installation
+  pixi run mojo --version
+  ```
 - **Blocks:** All validation, testing, and benchmarking
 
 ### 2. Validate Compilation & Run Tests
-- Run `mojo run tests/test_atomic.mojo` - validate atomic operations
-- Run `mojo run tests/test_bwtree.mojo` - validate BW-Tree operations
+- Install dependencies: `pixi install`
+- Run all tests with pixi:
+  ```bash
+  pixi run test-all  # Or run individually:
+  pixi run test-atomic
+  pixi run test-bwtree
+  pixi run test-epoch
+  pixi run test-backoff
+  pixi run test-integrated
+  ```
 - Fix any v0.25.6+ compatibility issues that surface
 - Verify memory ordering semantics work as documented
 
 ### 3. Run Performance Benchmarks
-- Execute `mojo run benchmarks/bench_basic_ops.mojo`
+- Execute: `pixi run bench`
+- Or directly: `pixi run mojo run benchmarks/bench_basic_ops.mojo`
 - Measure insert/lookup throughput
 - Validate SIMD binary search achieves 2-4x speedup target
 - Profile hot paths and optimize if needed
@@ -209,8 +232,13 @@ Setting up project structure and core primitives.
 ## Critical Blockers
 
 1. **Mojo runtime not available** - Cannot compile or test code
-   - Need to install Mojo 0.25.6+
-   - Options: mise, modular CLI, or container
+   - Solution: Install using pixi (see SETUP.md)
+   - Quick start:
+     ```bash
+     curl -fsSL https://pixi.sh/install.sh | bash
+     pixi install
+     pixi run mojo --version
+     ```
 
 ## Performance Targets
 

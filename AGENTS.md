@@ -36,11 +36,11 @@ See [ai/design/architecture.md](ai/design/architecture.md) for details.
 | Component | Technology | Purpose |
 |-----------|------------|---------|
 | Language | Mojo 0.25.6+ | First-class SIMD, atomic primitives |
+| Package Manager | pixi | Mojo version management, dependencies |
 | Atomics | `stdlib/os/atomic.mojo` | CAS, memory ordering (acquire/release) |
 | SIMD | `SIMD[DType, width]` | Vectorized key comparison, checksums |
 | Testing | `mojo run tests/` | Unit and concurrency tests |
 | Benchmarking | Custom harness | Performance validation |
-| Version Manager | `mise` | Mojo version management |
 
 ## Project Structure
 
@@ -100,27 +100,40 @@ See [ai/design/architecture.md](ai/design/architecture.md) for details.
 ### Build and Test
 
 ```bash
-# Run all tests
-mojo run tests/test_atomic.mojo
+# Using pixi tasks (recommended)
+pixi run test-all       # Run all tests
+pixi run test-atomic    # Run specific test
+pixi run bench          # Run benchmarks
 
-# Run specific test
-mojo run tests/test_node.mojo
-
-# Run benchmarks (future)
-mojo run benchmarks/basic_ops.mojo
+# Or run directly
+pixi run mojo run tests/test_atomic.mojo
+pixi run mojo run tests/test_bwtree.mojo
+pixi run mojo run benchmarks/bench_basic_ops.mojo
 ```
 
 ### Development
 
 ```bash
+# Install pixi (first time only)
+curl -fsSL https://pixi.sh/install.sh | bash
+
+# Configure Modular channels
+echo 'default-channels = ["https://conda.modular.com/max-nightly", "conda-forge"]' \
+  >> $HOME/.pixi/config.toml
+
+# Install project dependencies
+pixi install
+
 # Check Mojo version
-mojo --version  # Requires 0.25.6+
+pixi run mojo --version  # Requires 0.25.6+
 
-# Install/update Mojo
-mise install mojo
+# Run in pixi environment
+pixi shell  # Activate shell
+mojo --version
+exit
 
-# Format code (future - when mojo fmt available)
-# mojo fmt src/
+# Or use pixi run directly
+pixi run mojo run tests/test_atomic.mojo
 ```
 
 ## Code Standards
