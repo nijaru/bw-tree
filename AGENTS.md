@@ -64,6 +64,7 @@ See [ai/design/architecture.md](ai/design/architecture.md) for details.
 | `TODO.md` | Active tasks | No "Done" sections, current work only |
 | `DECISIONS.md` | Active architectural decisions | Superseded → ai/decisions/ |
 | `RESEARCH.md` | Research findings index | Details → ai/research/ |
+| `MOJO_REFERENCE.md` | Mojo patterns & v0.25.6+ gotchas | Always reference when coding |
 
 **Reference files** (subdirectories - loaded only when needed):
 
@@ -124,6 +125,8 @@ mise install mojo
 
 ## Code Standards
 
+**For detailed Mojo patterns, memory ordering, and v0.25.6+ semantics, see [ai/MOJO_REFERENCE.md](ai/MOJO_REFERENCE.md)**
+
 ### Mojo-Specific
 
 | Standard | Rule | Example |
@@ -131,8 +134,9 @@ mise install mojo
 | **Atomics** | Use explicit memory ordering | `atom.load[ordering=Consistency.ACQUIRE]()` |
 | **SIMD** | Explicit width for clarity | `SIMD[DType.int64, 4]` not magic numbers |
 | **Pointers** | Prefer `UnsafePointer[T]` | Type-safe over raw addresses |
-| **Ownership** | Use `owned`, `borrowed` | Explicit lifetime semantics |
+| **Ownership** | Use `mut`, `borrowed`, `owned` | Explicit lifetime semantics (prefer `mut` over `inout`) |
 | **Inlining** | `@always_inline` for hot paths | Key comparison, CAS loops |
+| **Copyability** | Do NOT use `ImplicitlyCopyable` | Prevent accidental copies of atomic structs |
 
 ### Naming
 
@@ -167,9 +171,15 @@ See [ai/STATUS.md](ai/STATUS.md) for current state, blockers, and recent learnin
 
 ## References
 
+### Papers
 - "The Bw-Tree: A B-tree for New Hardware Platforms" (Levandoski et al., 2013)
 - "Building a Bw-Tree Takes More Than Just Buzz Words" (Wang et al., 2018)
+
+### Mojo Documentation
+- **[ai/MOJO_REFERENCE.md](ai/MOJO_REFERENCE.md)** - Project-specific patterns and v0.25.6+ gotchas
 - Mojo atomic stdlib: `modular/mojo/stdlib/stdlib/os/atomic.mojo`
+- Mojo Manual: https://docs.modular.com/mojo/manual/
+- Changelog: https://github.com/modular/modular/blob/main/mojo/docs/changelog-released.md
 
 ## License
 
